@@ -1,0 +1,19 @@
+services:
+  xray:
+    image: "ghcr.io/xtls/xray-core:latest"
+    restart: unless-stopped
+    volumes:
+      - ./xray.json:/etc/xray/config.json:ro 
+    cpus: 0.3
+    mem_limit: 128m
+    read_only: true
+
+  alloy:
+    image: "grafana/alloy:latest"
+    restart: unless-stopped
+    volumes:
+      - ./config.alloy:/etc/alloy/config.alloy:ro
+      - /var/lib/alloy/data
+    cpus: 0.2
+    mem_limit: 128m
+    read_only: true

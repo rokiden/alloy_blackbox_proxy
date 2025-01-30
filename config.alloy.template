@@ -1,0 +1,156 @@
+logging {     
+  level = "warn"
+}
+
+prometheus.exporter.blackbox "blackbox" {
+  config = `
+{ 
+  modules: { 
+    http_direct : { 
+      prober: http,
+      http: { 
+        method: HEAD, 
+        preferred_ip_protocol: ip4, 
+        ip_protocol_fallback: false
+      }
+    },
+    http_ol: {
+      prober: http,
+      http: {
+        method: HEAD,
+        proxy_url: "http://xray:1081",
+        skip_resolve_phase_with_proxy: true
+      }
+    },
+    http_wg: {
+      prober: http,
+      http: {
+        method: HEAD,
+        proxy_url: "http://xray:1082",
+        skip_resolve_phase_with_proxy: true
+      }
+    }
+  }
+}`
+
+  target {
+    name    = "google"
+    address = "http://www.google.com/generate_204"
+    module  = "http_direct"
+  }
+
+  target {
+    name    = "google"
+    address = "http://www.google.com/generate_204"
+    module  = "http_ol"
+  }
+
+  target {
+    name    = "google"
+    address = "http://www.google.com/generate_204"
+    module  = "http_wg"
+  }
+
+
+  target {
+    name    = "instagram"
+    address = "https://www.instagram.com"
+    module  = "http_direct"
+  }
+
+  target {
+    name    = "instagram"
+    address = "https://www.instagram.com"
+    module  = "http_ol"
+  }
+
+  target {
+    name    = "instagram"
+    address = "https://www.instagram.com"
+    module  = "http_wg"
+  }
+
+
+  target {
+    name    = "tiktok"
+    address = "https://www.tiktok.com"
+    module  = "http_direct"
+  }
+
+  target {
+    name    = "tiktok"
+    address = "https://www.tiktok.com"
+    module  = "http_ol"
+  }
+
+  target {
+    name    = "tiktok"
+    address = "https://www.tiktok.com"
+    module  = "http_wg"
+  }
+
+
+  target {
+    name    = "youtube"
+    address = "https://www.youtube.com"
+    module  = "http_direct"
+  }
+
+  target {
+    name    = "youtube"
+    address = "https://www.youtube.com"
+    module  = "http_ol"
+  }
+
+  target {
+    name    = "youtube"
+    address = "https://www.youtube.com"
+    module  = "http_wg"
+  }
+
+}
+
+discovery.relabel "blackbox" {
+  targets = prometheus.exporter.blackbox.blackbox.targets
+  rule {
+    source_labels = ["job"]
+    target_label = "job"
+    regex = "^integrations/blackbox/(.*)$"
+  }
+  rule {
+    source_labels = ["__param_module"]
+    target_label = "proxy"
+    regex = "^http_(.*)$"
+  }
+}
+
+prometheus.scrape "blackbox" {     
+  scrape_interval = "1m"
+  targets = discovery.relabel.blackbox.output
+  forward_to = [prometheus.remote_write.morefine.receiver]
+}    
+
+prometheus.remote_write "morefine" {
+  endpoint {              
+    url = "${ALLOY_URL}"
+    basic_auth {
+      username = "${ALLOY_USER}"
+      password = "${ALLOY_PASS}"
+    }                    
+    queue_config {                  
+      batch_send_deadline = "1m"
+      max_samples_per_send = 2000
+      min_backoff = "10s"
+      max_backoff = "5m"                             
+      max_shards = 2                                      
+    }
+    write_relabel_config {
+      target_label = "instance"
+      replacement = "${ALLOY_INSTANCE}"
+    }
+  }
+  wal {                      
+    max_keepalive_time = "24h"
+    truncate_frequency = "1h"
+  }          
+}    
