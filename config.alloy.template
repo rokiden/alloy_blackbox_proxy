@@ -73,19 +73,19 @@ prometheus.exporter.blackbox "blackbox" {
 
   target {
     name    = "tiktok"
-    address = "https://www.tiktok.com"
+    address = "https://www.tiktok.com/explore"
     module  = "http_direct"
   }
 
   target {
     name    = "tiktok"
-    address = "https://www.tiktok.com"
+    address = "https://www.tiktok.com/explore"
     module  = "http_ol"
   }
 
   target {
     name    = "tiktok"
-    address = "https://www.tiktok.com"
+    address = "https://www.tiktok.com/explore"
     module  = "http_wg"
   }
 
