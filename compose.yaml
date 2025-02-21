@@ -1,11 +1,20 @@
 services:
-  xray:
-    image: "ghcr.io/xtls/xray-core:latest"
-    restart: unless-stopped
+  wireproxy:
+    image: "ghcr.io/whyvl/wireproxy:latest"
     volumes:
-      - ./xray.json:/etc/xray/config.json:ro 
-    cpus: 0.3
-    mem_limit: 128m
+      - ./wg.conf:/wg.conf:ro
+      - ./wireproxy.conf:/wireproxy.conf:ro
+    command: -s -c /wireproxy.conf
+    cpus: 0.1
+    mem_limit: 64m
+    read_only: true
+
+  shadowsocks:
+    image: "ghcr.io/shadowsocks/sslocal-rust:latest"
+    volumes:
+      - ./shadowsocks.json:/etc/shadowsocks-rust/config.json:ro
+    cpus: 0.1
+    mem_limit: 64m
     read_only: true
 
   alloy:

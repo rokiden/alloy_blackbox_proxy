@@ -3,16 +3,6 @@ ALLOY_URL="https://remote_write_server:port/path"
 ALLOY_USER="basic_auth_user"
 ALLOY_PASS="basic_auth_pass"
 
-XRAY_SERVER_DOMAIN="vpn_server.io"
-
-XRAY_OL_PORT=""
-XRAY_OL_PASS=""
-
-XRAY_WG_PORT=""
-XRAY_WG_PRIV=""
-XRAY_WG_PUB=""
-XRAY_WG_PSK=""
-XRAY_WG_ADDR="10.10.10.2"
-XRAY_WG_DNS="10.10.10.1"
-
-
+SS_SERVER="vpn_server.io"
+SS_PORT=""
+SS_PASS=""

@@ -10,6 +10,7 @@ prometheus.exporter.blackbox "blackbox" {
       prober: http,
       http: { 
         method: HEAD, 
+        enable_http2: false,
         preferred_ip_protocol: ip4, 
         ip_protocol_fallback: false
       }
@@ -18,7 +19,8 @@ prometheus.exporter.blackbox "blackbox" {
       prober: http,
       http: {
         method: HEAD,
-        proxy_url: "http://xray:1081",
+        enable_http2: false,
+        proxy_url: "http://shadowsocks:1080",
         skip_resolve_phase_with_proxy: true
       }
     },
@@ -26,7 +28,8 @@ prometheus.exporter.blackbox "blackbox" {
       prober: http,
       http: {
         method: HEAD,
-        proxy_url: "http://xray:1082",
+        enable_http2: false,
+        proxy_url: "http://wireproxy:1080",
         skip_resolve_phase_with_proxy: true
       }
     }
@@ -35,19 +38,19 @@ prometheus.exporter.blackbox "blackbox" {
 
   target {
     name    = "google"
-    address = "http://www.google.com/generate_204"
+    address = "https://www.google.com/generate_204"
     module  = "http_direct"
   }
 
   target {
     name    = "google"
-    address = "http://www.google.com/generate_204"
+    address = "https://www.google.com/generate_204"
     module  = "http_ol"
   }
 
   target {
     name    = "google"
-    address = "http://www.google.com/generate_204"
+    address = "https://www.google.com/generate_204"
     module  = "http_wg"
   }
 
