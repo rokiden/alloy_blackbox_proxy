@@ -1,6 +1,7 @@
 services:
   wireproxy:
     image: "ghcr.io/whyvl/wireproxy:latest"
+    restart: unless-stopped
     volumes:
       - ./wg.conf:/wg.conf:ro
       - ./wireproxy.conf:/wireproxy.conf:ro
@@ -11,6 +12,7 @@ services:
 
   shadowsocks:
     image: "ghcr.io/shadowsocks/sslocal-rust:latest"
+    restart: unless-stopped
     volumes:
       - ./shadowsocks.json:/etc/shadowsocks-rust/config.json:ro
     cpus: 0.1
